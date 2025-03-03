@@ -1,35 +1,35 @@
-# Qwen 0.5B en GRPO
+# Qwen 0.5B in GRPO
 
-Entrenamiento de un modelo pequeño para razonamiento matemático con aprendizaje por refuerzo
+Training a compact model for mathematical reasoning using reinforcement learning
 
-## Descripción
+## Description
 
-Este repositorio contiene un notebook innovador que combina el modelo **Qwen-0.5B** con la técnica de **GRPO** (Generalized Reward Policy Optimization) para entrenar una red neuronal capaz de razonar sobre problemas matemáticos de nivel escolar. Se aprovecha el benchmark **GSM8K** y se utiliza **vLLM** para mejorar la velocidad y eficiencia en la generación de texto.
+This repository features an innovative notebook that brings together the **Qwen-0.5B** model and the **GRPO** (Generalized Reward Policy Optimization) technique. The goal? To train a neural network that can tackle school-level math problems. It leverages the **GSM8K** benchmark and uses **vLLM** to speed up and enhance text generation.
 
-¿Por qué es interesante este notebook?  
-- **Exploración de nuevos métodos:** Integra aprendizaje por refuerzo en el entrenamiento de modelos de lenguaje, optimizando la respuesta mediante funciones de recompensa.
-- **Formato estructurado y creativo:** Implementa un sistema de prompt basado en XML para obtener cadenas de razonamiento (chain-of-thought) y respuestas finales, lo que ayuda a desglosar el proceso cognitivo del modelo.
-- **Uso de tecnologías punteras:** Desde la aceleración en generación de textos con vLLM hasta la utilización de librerías modernas como `trl` y `datasets` para entrenamiento con RL.
+Why is this notebook exciting?  
+- **Exploring new methods:** It blends reinforcement learning with language model training, refining responses through smart reward functions.  
+- **Structured and creative approach:** It uses an XML-based prompt system to generate chain-of-thought reasoning and final answers, neatly breaking down the model’s thinking process.  
+- **Cutting-edge tech in action:** From the accelerated text generation of vLLM to modern libraries like `trl` and `datasets` for RL training, this notebook is all about innovation.
 
-## Características Principales
+## Main Features
 
-- **Entrenamiento basado en RL:** Se definen múltiples funciones de recompensa para evaluar la calidad del razonamiento y la respuesta generada.
-- **Uso del benchmark GSM8K:** Proporciona una sólida base de problemas matemáticos para medir la capacidad de razonamiento del modelo.
-- **Optimización de recursos:** Gracias a vLLM, se logra una generación de textos más rápida y eficiente, permitiendo entrenamientos más ágiles.
-- **Formato estructurado en la respuesta:** El sistema exige un formato específico con secciones `<reasoning>` y `<answer>` para facilitar la evaluación y comprensión de la cadena de pensamiento del modelo.
+- **RL-based training:** Multiple reward functions evaluate both the reasoning process and the generated answers.  
+- **GSM8K benchmark:** Provides a robust set of math problems to test the model's reasoning skills.  
+- **Efficient resource usage:** vLLM ensures faster and more efficient text generation, making training sessions smoother.  
+- **Structured output:** Enforces a specific format with `<reasoning>` and `<answer>` sections to simplify the evaluation and understanding of the model’s thought process.
 
-## Requisitos
+## Requirements
 
-Antes de comenzar, asegúrate de tener instaladas las siguientes dependencias:
+Before you dive in, make sure you have the following dependencies installed:
 
-- Python 3.8 o superior
+- Python 3.8 or higher
 - [vLLM](https://github.com/vllm-project/vllm)  
 - [trl](https://github.com/lvwerra/trl)
 - [datasets](https://huggingface.co/docs/datasets/)
 - [transformers](https://huggingface.co/docs/transformers)
 - [torch](https://pytorch.org/)
 
-Se incluye un archivo `requirements.txt` para facilitar la instalación:
+A `requirements.txt` file is provided to make installation a breeze:
 
 ```txt
 vllm
@@ -37,3 +37,4 @@ trl
 datasets
 transformers
 torch
+```
