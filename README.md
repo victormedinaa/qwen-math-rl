@@ -1,40 +1,91 @@
-# Qwen 0.5B in GRPO
+# Generalized Reward Policy Optimization (GRPO) for Mathematical Reasoning
 
-Training a compact model for mathematical reasoning using reinforcement learning
+This repository contains an implementation of Generalized Reward Policy Optimization (GRPO) applied to the `Qwen2.5-0.5B-Instruct` language model. The project demonstrates how to fine-tune small-scale language models for complex mathematical reasoning tasks using the GSM8K dataset.
 
-## Description
+The core objective is to align the model's output generation to a structured Chain-of-Thought (CoT) format, ensuring both interpretability of the reasoning process and accuracy of the final numerical result.
 
-This repository features an innovative notebook that brings together the **Qwen-0.5B** model and the **GRPO** (Generalized Reward Policy Optimization) technique. The goal? To train a neural network that can tackle school-level math problems. It leverages the **GSM8K** benchmark and uses **vLLM** to speed up and enhance text generation.
+## Project Overview
 
-Why is this notebook exciting?  
-- **Exploring new methods:** It blends reinforcement learning with language model training, refining responses through smart reward functions.  
-- **Structured and creative approach:** It uses an XML-based prompt system to generate chain-of-thought reasoning and final answers, neatly breaking down the model’s thinking process.  
-- **Cutting-edge tech in action:** From the accelerated text generation of vLLM to modern libraries like `trl` and `datasets` for RL training, this notebook is all about innovation.
+Reinforcement Learning from Human Feedback (RLHF) and its variants are standard for aligning LLMs. This project utilizes GRPO, a policy optimization algorithm that eliminates the need for a separate critic model, thereby reducing the computational overhead.
 
-## Main Features
-
-- **RL-based training:** Multiple reward functions evaluate both the reasoning process and the generated answers.  
-- **GSM8K benchmark:** Provides a robust set of math problems to test the model's reasoning skills.  
-- **Efficient resource usage:** vLLM ensures faster and more efficient text generation, making training sessions smoother.  
-- **Structured output:** Enforces a specific format with `<reasoning>` and `<answer>` sections to simplify the evaluation and understanding of the model’s thought process.
-
-## Requirements
-
-Before you dive in, make sure you have the following dependencies installed:
-
-- Python 3.8 or higher
-- [vLLM](https://github.com/vllm-project/vllm)  
-- [trl](https://github.com/lvwerra/trl)
-- [datasets](https://huggingface.co/docs/datasets/)
-- [transformers](https://huggingface.co/docs/transformers)
-- [torch](https://pytorch.org/)
-
-A `requirements.txt` file is provided to make installation a breeze:
-
-```txt
-vllm
-trl
-datasets
-transformers
-torch
+The training pipeline enforces a strict XML-based output structure:
+```xml
+<reasoning>
+[Step-by-step logic and calculation]
+</reasoning>
+<answer>
+[Final integer result]
+</answer>
 ```
+
+## Key Features & Optimizations
+
+*   **Resource Efficiency:** The training pipeline is specifically optimized for consumer-grade or mid-range cloud hardware (e.g., dual NVIDIA T4 GPUs). It utilizes full-precision (Float32) training to mitigate gradient scaling errors common in mixed-precision training on smaller architectures.
+*   **Dependency Management:** Addresses specific binary incompatibility issues between `numpy`, `pandas`, and `scipy` often encountered in updated container environments (such as Google Colab or Kaggle).
+*   **Custom Reward Modeling:** Implements a composite reward function that evaluates:
+    *   **XML Structure:** Validates the presence and order of reasoning and answer tags.
+    *   **Format Compliance:** Checks for strict and soft formatting constraints.
+    *   **Correctness:** Verifies the final numerical output against the ground truth.
+
+## Repository Structure
+
+```text
+.
+├── notebooks/
+│   └── train_grpo_gsm8k.ipynb    # Main training pipeline
+├── src/
+│   ├── config.py                 # Hyperparameter configuration
+│   └── rewards.py                # Definition of reward functions
+├── .gitignore                    # Configuration for ignored files
+├── requirements.txt              # Project dependencies
+└── README.md                     # Project documentation
+```
+
+## Installation
+
+To reproduce this environment, it is critical to install specific versions of the scientific computing stack to avoid `dtype` size mismatches and protobuf errors.
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/YourUsername/Qwen-GRPO-Math.git
+    cd Qwen-GRPO-Math
+    ```
+
+2.  **Install dependencies:**
+    It is recommended to use a virtual environment.
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+    *Note: The `requirements.txt` enforces `numpy<2.0` and `protobuf==3.20.3` to ensure stability with the `transformers` and `trl` libraries.*
+
+## Training Configuration
+
+The model is trained using the `GRPOTrainer` from the Hugging Face TRL library. Below are the key hyperparameters used for the reference implementation:
+
+| Parameter | Value | Description |
+| :--- | :--- | :--- |
+| **Model** | Qwen2.5-0.5B-Instruct | Base model optimized for instruction following. |
+| **Learning Rate** | 5e-6 | Conservative rate to prevent catastrophic forgetting. |
+| **Batch Size** | 8 (per device) | Optimized for dual T4 GPUs (Effective global batch size: 16). |
+| **Max Steps** | 400 | Sufficient for convergence on the reasoning format. |
+| **Context Length** | 256 (Prompt) / 512 (Completion) | Extended completion length to allow for detailed CoT. |
+| **Precision** | Float32 | Used to prevent `unscale_gradients` errors on T4 architecture. |
+
+## Usage
+
+The primary training logic is contained within the Jupyter Notebook in the `notebooks/` directory.
+
+1.  Ensure your GPU environment is active.
+2.  Open `notebooks/train_grpo_gsm8k.ipynb`.
+3.  Execute the cells sequentially. The notebook handles the dataset loading, reward function definition, and the training loop.
+
+## Results
+
+Upon completion of the training steps, the model demonstrates a significant improvement in adhering to the requested XML format. The reward functions guide the model to self-correct its generation strategy, prioritizing logical decomposition of the math problems before outputting the final answer.
+
+## Acknowledgments
+
+*   **DeepSeek AI:** For the original proposal of the GRPO algorithm.
+*   **Hugging Face:** For the `trl` and `transformers` libraries.
+*   **OpenAI:** For the GSM8K dataset.
