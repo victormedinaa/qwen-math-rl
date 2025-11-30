@@ -47,8 +47,8 @@ To reproduce this environment, it is critical to install specific versions of th
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/YourUsername/Qwen-GRPO-Math.git
-    cd Qwen-GRPO-Math
+    git clone https://github.com/victormedinaa/qwen-math-rl.git
+    cd qwen-math-rl
     ```
 
 2.  **Install dependencies:**
